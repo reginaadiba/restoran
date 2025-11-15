@@ -1,10 +1,11 @@
 <?php
 
+use App\Http\Middleware\AblePayOrder;
 use Illuminate\Foundation\Application;
 use App\Http\Middleware\AbleCreateUser;
 use App\Http\Middleware\AbleCreateOrder;
-use App\Http\Middleware\AbleCreateUpdateItem;
 use App\Http\Middleware\AbleFinishOrder;
+use App\Http\Middleware\AbleCreateUpdateItem;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
@@ -21,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'ableCreateUpdateItem' => AbleCreateUpdateItem::class,
             'ableCreateUser' => AbleCreateUser::class,
             'ableFinishOrder' => AbleFinishOrder::class,
+            'ablePayOrder' => AblePayOrder::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

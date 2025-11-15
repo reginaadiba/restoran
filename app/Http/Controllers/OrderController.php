@@ -10,6 +10,60 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+    public function index()
+    {
+        $orders = Order::select(
+            'id', 
+            'customer_name', 
+            'table_no', 
+            'order_date', 
+            'order_time', 
+            'status', 
+            'total'
+            )->get();
+
+        return response(['data' => $orders]);
+    }
+
+    public function show($id)
+    {
+        $order = Order::findOrFail($id);
+        return $order->loadMissing([
+            'orderDetail:order_id,price,item_id',
+            'orderDetail.item:name,id',
+            'waitress:id,name',
+            'cashier:id,name'
+        ]);
+
+        return response(['data' => $order]);
+    }
+
+    public function setAsDone($id)
+    {
+        $order = Order::findOrFail($id);
+        if ($order->status != 'ordered') {
+            return response('Order cannot set to DONE because the status is not ORDERED', 403);
+        }
+        
+        $order->status = 'done';
+        $order->save();
+        
+        return response(['data' => $order]);
+    }
+
+    public function payment($id)
+    {
+        $order = Order::findOrFail($id);
+        if ($order->status != 'done') {
+            return response('Order cannot set to PAID because the status is not DONE', 403);
+        }
+        
+        $order->status = 'paid';
+        $order->save();
+        
+        return response(['data' => $order]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -39,6 +93,9 @@ class OrderController extends Controller
                     'price' => $menu->price
                 ]);
             });
+
+            $order->total = $order->sumOrderPrice();
+            $order->save();
 
             DB::commit();
         } catch (\Throwable $th) {

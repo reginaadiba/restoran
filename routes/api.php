@@ -14,6 +14,7 @@ use App\Http\Controllers\OrderController;
 Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/me', [AuthController::class, 'me'])->middleware(['auth:sanctum']);
+    Route::get('/logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum']);
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -38,4 +39,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/order', [OrderController::class, 'store'])
         ->middleware(['ableCreateOrder']);
+    Route::get('/order/{id}/set-as-done', [OrderController::class, 'setAsDone'])
+        ->middleware(['ableFinishOrder']);
+    Route::get('/order/{id}/payment', [OrderController::class, 'payment'])
+        ->middleware(['ablePayOrder']);
+    Route::get('/order', [OrderController::class, 'index']);
+    Route::get('/order/{id}', [OrderController::class, 'show']);
 });
