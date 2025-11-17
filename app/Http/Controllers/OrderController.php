@@ -19,8 +19,15 @@ class OrderController extends Controller
             'order_date', 
             'order_time', 
             'status', 
-            'total'
-            )->get();
+            'total',
+            'waitress_id',
+            'cashier_id'
+            )
+            ->with([
+                'waitress:id,name',
+                'cashier:id,name'
+            ])
+            ->get();
 
         return response(['data' => $orders]);
     }
