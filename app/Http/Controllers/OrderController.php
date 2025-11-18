@@ -13,12 +13,12 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::select(
-            'id', 
-            'customer_name', 
-            'table_no', 
-            'order_date', 
-            'order_time', 
-            'status', 
+            'id',
+            'customer_name',
+            'table_no',
+            'order_date',
+            'order_time',
+            'status',
             'total'
             )->get();
 
@@ -29,7 +29,7 @@ class OrderController extends Controller
     {
         $order = Order::findOrFail($id);
         return $order->loadMissing([
-            'orderDetail:order_id,price,item_id',
+            'orderDetail:order_id,price,item_id,qty',
             'orderDetail.item:name,id',
             'waitress:id,name',
             'cashier:id,name'
@@ -44,10 +44,10 @@ class OrderController extends Controller
         if ($order->status != 'ordered') {
             return response('Order cannot set to DONE because the status is not ORDERED', 403);
         }
-        
+
         $order->status = 'done';
         $order->save();
-        
+
         return response(['data' => $order]);
     }
 
@@ -57,10 +57,10 @@ class OrderController extends Controller
         if ($order->status != 'done') {
             return response('Order cannot set to PAID because the status is not DONE', 403);
         }
-        
+
         $order->status = 'paid';
         $order->save();
-        
+
         return response(['data' => $order]);
     }
 
