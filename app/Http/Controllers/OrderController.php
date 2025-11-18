@@ -71,6 +71,7 @@ class OrderController extends Controller
         }
 
         $order->status = 'paid';
+        $order->cashier_id = auth()->user()->id;
         $order->save();
         $order->loadMissing([
             'orderDetail:order_id,price,item_id,qty',
@@ -126,7 +127,7 @@ class OrderController extends Controller
 
     public function report(Request $request)
     {
-        $data = Order::whereMonth($request->month);
+        $data = Order::whereMonth('order_date', $request->month);
         $orders = $data->select(
                 'id',
                 'customer_name',
