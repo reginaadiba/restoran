@@ -46,4 +46,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         ->middleware(['ablePayOrder']);
     Route::get('/order', [OrderController::class, 'index']);
     Route::get('/order/{id}', [OrderController::class, 'show']);
+    Route::get('/order-report', [OrderController::class, 'report'])
+        ->middleware(['ableGetOrderReport']);
 });

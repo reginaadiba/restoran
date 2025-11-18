@@ -123,4 +123,38 @@ class OrderController extends Controller
 
         return response(['data' => $order]);
     }
+
+    public function report(Request $request)
+    {
+        $data = Order::whereMonth($request->month);
+        $orders = $data->select(
+                'id',
+                'customer_name',
+                'table_no',
+                'order_date',
+                'order_time',
+                'status',
+                'total',
+                'waitress_id',
+                'cashier_id'
+            )
+            ->with([
+                'waitress:id,name',
+                'cashier:id,name'
+            ])
+            ->get();
+
+        $orderCount = $data->count();
+        $maxPayment = $data->max('total');
+        $minPayment = $data->min('total');
+
+        $result = [
+            'orders' => $orders,
+            'orderCount' => $orderCount,
+            'maxPayment' => $maxPayment,
+            'minPayment' => $minPayment
+        ];
+
+        return response(['data' => $result]);
+    }
 }
