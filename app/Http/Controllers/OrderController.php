@@ -35,7 +35,7 @@ class OrderController extends Controller
     public function show($id)
     {
         $order = Order::findOrFail($id);
-        return $order->loadMissing([
+        $order->loadMissing([
             'orderDetail:order_id,price,item_id,qty',
             'orderDetail.item:name,id',
             'waitress:id,name',
@@ -54,7 +54,12 @@ class OrderController extends Controller
 
         $order->status = 'done';
         $order->save();
-
+        $order->loadMissing([
+            'orderDetail:order_id,price,item_id,qty',
+            'orderDetail.item:name,id',
+            'waitress:id,name',
+            'cashier:id,name'
+        ]);
         return response(['data' => $order]);
     }
 
@@ -67,7 +72,12 @@ class OrderController extends Controller
 
         $order->status = 'paid';
         $order->save();
-
+        $order->loadMissing([
+            'orderDetail:order_id,price,item_id,qty',
+            'orderDetail.item:name,id',
+            'waitress:id,name',
+            'cashier:id,name'
+        ]);
         return response(['data' => $order]);
     }
 
