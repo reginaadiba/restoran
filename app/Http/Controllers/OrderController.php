@@ -19,8 +19,15 @@ class OrderController extends Controller
             'order_date',
             'order_time',
             'status',
-            'total'
-            )->get();
+            'total',
+            'waitress_id',
+            'cashier_id'
+            )
+            ->with([
+                'waitress:id,name',
+                'cashier:id,name'
+            ])
+            ->get();
 
         return response(['data' => $orders]);
     }
@@ -86,11 +93,12 @@ class OrderController extends Controller
             $data['items'] = $request->items;
 
             collect($data['items'])->map(function($item) use($order) {
-                $menu = Item::where('id', $item)->first();
+                $menu = Item::where('id', $item['id'])->first();
                 OrderDetail::create([
                     'order_id' => $order->id,
-                    'item_id' => $item,
-                    'price' => $menu->price
+                    'item_id' => $item['id'],
+                    'price' => $menu->price,
+                    'qty' => $item['qty']
                 ]);
             });
 
