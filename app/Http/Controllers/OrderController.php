@@ -27,6 +27,7 @@ class OrderController extends Controller
                 'waitress:id,name',
                 'cashier:id,name'
             ])
+            ->orderBy('id', 'desc')
             ->get();
 
         return response(['data' => $orders]);
