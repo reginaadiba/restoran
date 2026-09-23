@@ -58,6 +58,7 @@ class ItemController extends Controller
             $file = $request->file('image_file');
             $fileName = $file->getClientOriginalName();
             $newName = Carbon::now()->timestamp.'_'.$fileName;
+            
             Storage::disk('public')->putFileAs('items', $file, $newName);
 
             $request['image'] = $newName;
