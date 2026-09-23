@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\RoleController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -16,6 +17,9 @@ Route::prefix('auth')->group(function () {
     Route::get('/me', [AuthController::class, 'me'])->middleware(['auth:sanctum']);
     Route::get('/logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum']);
 });
+
+Route::get('/role', [RoleController::class, 'index'])
+    ->middleware(['auth:sanctum', 'ableCreateUser']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/create-order', function() {
